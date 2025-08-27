@@ -55,3 +55,42 @@ app.post('/send-whatsapp', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API rodando na porta ${PORT}`));
+const express = require("express");
+const nodemailer = require("nodemailer");
+
+const app = express();
+app.use(express.json());
+
+// rota teste já existe: /health
+
+// rota para enviar email
+app.post("/send-email", async (req, res) => {
+  const { to, subject, text } = req.body;
+
+  try {
+    // configura o transporte SMTP (exemplo: Gmail)
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER, // vem do Render (env var)
+        pass: process.env.EMAIL_PASS, // vem do Render (env var)
+      },
+    });
+
+    // envia o e-mail
+    let info = await transporter.sendMail({
+      from: `"MVP App" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      text,
+    });
+
+    res.json({ success: true, messageId: info.messageId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`API rodando na porta ${PORT}`));
