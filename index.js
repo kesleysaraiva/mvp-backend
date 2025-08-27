@@ -55,7 +55,6 @@ app.post('/send-whatsapp', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API rodando na porta ${PORT}`));
-const express = require("express");
 const nodemailer = require("nodemailer");
 
 const app = express();
